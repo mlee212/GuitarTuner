@@ -10,6 +10,9 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,16 +21,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
-    
 
+        Button btn= (Button) findViewById(R.id.btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                requestAudioPermissions();
+            }
+        });
+    }
+
+    public String state;
     //Requesting run-time permissions
 
     //Create placeholder for user's consent to record_audio permission.
     //This will be used in handling callback
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
 
-    private void requestAudioPermissions() {
+    public void requestAudioPermissions() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -64,6 +74,13 @@ public class MainActivity extends AppCompatActivity {
                     AudioFormat.CHANNEL_IN_MONO,
                     AudioFormat.ENCODING_PCM_16BIT,
                     bufferSize);
+            reco.startRecording();
+
+            if(reco.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
+                state = "Mic is working";
+
+            }
+            reco.stop();
         }
     }
 
@@ -94,4 +111,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }
